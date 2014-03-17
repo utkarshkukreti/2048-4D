@@ -12,7 +12,15 @@ Grid.prototype.build = function () {
     var row = this.cells[x] = [];
 
     for (var y = 0; y < this.size; y++) {
-      row.push(null);
+      var col = [];
+      row.push(col);
+      for (var z = 0; z < this.size; z++) {
+          var beam = [];
+          col.push(beam);
+          for (var w = 0; w < this.size; w++) {
+              beam.push(null);
+          }
+      }
     }
   }
 };
@@ -29,9 +37,9 @@ Grid.prototype.randomAvailableCell = function () {
 Grid.prototype.availableCells = function () {
   var cells = [];
 
-  this.eachCell(function (x, y, tile) {
+  this.eachCell(function (x, y, z, w, tile) {
     if (!tile) {
-      cells.push({ x: x, y: y });
+      cells.push({ x: x, y: y, z: z, w: w });
     }
   });
 
@@ -42,7 +50,11 @@ Grid.prototype.availableCells = function () {
 Grid.prototype.eachCell = function (callback) {
   for (var x = 0; x < this.size; x++) {
     for (var y = 0; y < this.size; y++) {
-      callback(x, y, this.cells[x][y]);
+      for (var z = 0; z < this.size; z++) {
+        for (var w = 0; w < this.size; w++) {
+          callback(x, y, z, w, this.cells[x][y][z][w]);
+        }
+      }
     }
   }
 };
@@ -63,7 +75,7 @@ Grid.prototype.cellOccupied = function (cell) {
 
 Grid.prototype.cellContent = function (cell) {
   if (this.withinBounds(cell)) {
-    return this.cells[cell.x][cell.y];
+    return this.cells[cell.x][cell.y][cell.z][cell.w];
   } else {
     return null;
   }
@@ -71,14 +83,16 @@ Grid.prototype.cellContent = function (cell) {
 
 // Inserts a tile at its position
 Grid.prototype.insertTile = function (tile) {
-  this.cells[tile.x][tile.y] = tile;
+  this.cells[tile.x][tile.y][tile.z][tile.w] = tile;
 };
 
 Grid.prototype.removeTile = function (tile) {
-  this.cells[tile.x][tile.y] = null;
+  this.cells[tile.x][tile.y][tile.z][tile.w] = null;
 };
 
 Grid.prototype.withinBounds = function (position) {
   return position.x >= 0 && position.x < this.size &&
-         position.y >= 0 && position.y < this.size;
+         position.y >= 0 && position.y < this.size &&
+         position.z >= 0 && position.z < this.size &&
+         position.w >= 0 && position.w < this.size;
 };
