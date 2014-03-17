@@ -62,10 +62,11 @@ KeyboardInputManager.prototype.listen = function () {
   keepPlaying.addEventListener("touchend", this.keepPlaying.bind(this));
 
   // Listen to swipe events
-  var touchStartClientX, touchStartClientY;
+  var touchStartClientX, touchStartClientY, maxTouches = 0;
   var gameContainer = document.getElementsByClassName("game-container")[0];
 
   gameContainer.addEventListener("touchstart", function (event) {
+    maxTouches = event.touches.length > maxTouches ? event.touches.length : maxTouches;
     if (event.touches.length > 1) return;
 
     touchStartClientX = event.touches[0].clientX;
@@ -80,6 +81,8 @@ KeyboardInputManager.prototype.listen = function () {
   gameContainer.addEventListener("touchend", function (event) {
     if (event.touches.length > 0) return;
 
+    var hyper = maxTouches > 1 ? 4 : 0;
+    maxTouches = 0;
     var dx = event.changedTouches[0].clientX - touchStartClientX;
     var absDx = Math.abs(dx);
 
@@ -88,7 +91,7 @@ KeyboardInputManager.prototype.listen = function () {
 
     if (Math.max(absDx, absDy) > 10) {
       // (right : left) : (down : up)
-      self.emit("move", absDx > absDy ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0));
+      self.emit("move", hyper + (absDx > absDy ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0)));
     }
   });
 };
