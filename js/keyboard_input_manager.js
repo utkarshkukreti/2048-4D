@@ -32,10 +32,10 @@ KeyboardInputManager.prototype.listen = function () {
     76: 1,
     74: 2,
     72: 3,
-    87: 4, // W
-    68: 5, // D
-    83: 6, // S
-    65: 7  // A
+    188: 4, // , (W)
+    69: 5, // E (D)
+    79: 6, // O (S)
+    65: 7  // A (A)
   };
 
   document.addEventListener("keydown", function (event) {
